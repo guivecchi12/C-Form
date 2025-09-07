@@ -97,9 +97,11 @@ namespace Software1_C
 
         private void addParts_Click(object sender, EventArgs e)
         {
-            Form addPartsForm = new Form();
+            Part partForm = new Part();
 
-            addPartsForm.Show();
+            if (partForm.ShowDialog() == DialogResult.OK) { 
+                partsGridView.Rows.Add(partForm);
+            }
         }
 
         private void modifyParts_Click(object sender, EventArgs e)
