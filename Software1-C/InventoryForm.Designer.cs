@@ -42,8 +42,8 @@
             deleteProducts = new Button();
             modifyProducts = new Button();
             addProducts = new Button();
-            exit = new Button();
             fileSystemWatcher1 = new FileSystemWatcher();
+            exit = new Button();
             ((System.ComponentModel.ISupportInitialize)partsGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)productsGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
@@ -227,11 +227,16 @@
             addProducts.UseVisualStyleBackColor = false;
             addProducts.Click += addProducts_Click;
             // 
+            // fileSystemWatcher1
+            // 
+            fileSystemWatcher1.EnableRaisingEvents = true;
+            fileSystemWatcher1.SynchronizingObject = this;
+            // 
             // exit
             // 
             exit.BackColor = SystemColors.ActiveBorder;
             exit.Font = new Font("Segoe UI", 11F);
-            exit.Location = new Point(1634, 645);
+            exit.Location = new Point(1634, 643);
             exit.Margin = new Padding(0);
             exit.Name = "exit";
             exit.Size = new Size(75, 41);
@@ -240,12 +245,7 @@
             exit.UseVisualStyleBackColor = false;
             exit.Click += exit_Click;
             // 
-            // fileSystemWatcher1
-            // 
-            fileSystemWatcher1.EnableRaisingEvents = true;
-            fileSystemWatcher1.SynchronizingObject = this;
-            // 
-            // InventoryManagement
+            // InventoryForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -265,7 +265,7 @@
             Controls.Add(label1);
             Controls.Add(productsGridView);
             Controls.Add(partsGridView);
-            Name = "InventoryManagement";
+            Name = "InventoryForm";
             Text = "Main Screen";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)partsGridView).EndInit();
@@ -292,5 +292,6 @@
         private Button modifyProducts;
         private Button addProducts;
         private FileSystemWatcher fileSystemWatcher1;
+        private Button exit;
     }
 }

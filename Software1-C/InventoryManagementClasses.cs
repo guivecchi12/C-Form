@@ -20,13 +20,14 @@ namespace Software1_C
     internal class Inhouse : Part
     {
 
-        public Inhouse(int partID, string name, decimal price, int inStock, int min, int max) : base() {
+        public Inhouse(int partID, string name, decimal price, int inStock, int min, int max, int machineID) : base() {
             this.PartID = partID;
             this.Name = name;
             this.Price = price;
             this.InStock = inStock;
             this.Min = min;
             this.Max = max;
+            this.MachineID = machineID;
         }
 
         public override int PartID { get; set; }
@@ -42,7 +43,7 @@ namespace Software1_C
     internal class OutSourced : Part
     {
 
-        public OutSourced(int partID, string name, decimal price, int inStock, int min, int max) : base()
+        public OutSourced(int partID, string name, decimal price, int inStock, int min, int max, string companyName) : base()
         {
             this.PartID = partID;
             this.Name = name;
@@ -50,6 +51,7 @@ namespace Software1_C
             this.InStock = inStock;
             this.Min = min;
             this.Max = max;
+            this.CompanyName = companyName;
         }
 
         public override int PartID { get; set; }
@@ -59,11 +61,19 @@ namespace Software1_C
         public override int Min { get; set; }
         public override int Max { get; set; }
 
-        public int CompanyName { get; set; }
+        public string CompanyName { get; set; }
     }
 
     internal class Product
     {
+        public Product(int productId, string name, decimal price, int inStock, int min, int max) {
+            this.ProductID = productId;
+            this.Name = name;
+            this.Price = price;
+            this.InStock = inStock;
+            this.Min = min;
+            this.Max = max;
+        }
         public BindingList<Part> AssociatedParts { get; } = new BindingList<Part>();
         public int ProductID { get; set; }
         public string Name { get; set; }

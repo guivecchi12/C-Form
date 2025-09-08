@@ -7,55 +7,80 @@ namespace Software1_C
 {
     public partial class InventoryForm : Form
     {
-        private DataGridView dataGridView;
-        private Button addButton;
-        private Button modifyButton;
-        private Button deleteButton;
-        private DataTable partsTable;
-        private DataTable productsTable;
-        private Button exit;
+        private Inventory inventory = new Inventory();
+        private DataTable partsTable = new DataTable("partsTable");
+        private DataTable productsTable = new DataTable("productsTable");
+
         public InventoryForm()
         {
             // Initialize Controls
             InitializeComponent();
+            InitializeData();
         }
 
+        private void InitializeData()
+        {
+            // Add a couple initial parts
+            Inhouse part1 = new Inhouse(0, "Wheel", 12.11M, 15, 5, 25, 1);
+            OutSourced part2 = new OutSourced(1, "Pedal", 8.22M, 11, 5, 25, "Company1");
+            Inhouse part3 = new Inhouse(2, "Chain", 8.33M, 12, 5, 25, 2);
+            OutSourced part4 = new OutSourced(3, "Seat", 4.55M, 8, 2, 15, "Company1");
+
+            this.inventory.addPart(part1);
+            this.inventory.addPart(part2);
+            this.inventory.addPart(part3);
+            this.inventory.addPart(part4);
+
+            // Add a couple initial products
+            Product redBike = new Product(0, "Red Bicycle", 11.44M, 15, 1, 25);
+            redBike.addAssociatedPart(part2);
+            redBike.addAssociatedPart(part4);
+
+            Product yellowBike = new Product(1, "Yellow Bicycle", 9.66M, 19, 1, 20);
+            yellowBike.addAssociatedPart(part1);
+            yellowBike.addAssociatedPart(part3);
+
+            Product blueBike = new Product(2, "Blue Bicycle", 12.77M, 5, 1, 25);
+
+            this.inventory.addProduct(redBike);
+            this.inventory.addProduct(yellowBike);
+            this.inventory.addProduct(blueBike);
+        }
         private void InitializePartsTable()
         {
-            partsTable = new DataTable("MyData");
 
-            partsTable.Columns.Add("Part ID");
-            partsTable.Columns.Add("Name");
-            partsTable.Columns.Add("Inventory");
-            partsTable.Columns.Add("Price");
-            partsTable.Columns.Add("Min");
-            partsTable.Columns.Add("Max");
+            this.partsTable.Columns.Add("Part ID");
+            this.partsTable.Columns.Add("Name");
+            this.partsTable.Columns.Add("Inventory");
+            this.partsTable.Columns.Add("Price");
+            this.partsTable.Columns.Add("Min");
+            this.partsTable.Columns.Add("Max");
 
-            partsTable.Rows.Add(0, "Wheel", 15, 12.11, 5, 25);
-            partsTable.Rows.Add(1, "Pedal", 11, 8.22, 5, 25);
-            partsTable.Rows.Add(2, "Chain", 12, 8.33, 5, 25);
-            partsTable.Rows.Add(3, "Seat", 8, 4.55, 2, 15);
 
-            partsGridView.DataSource = partsTable;
+            foreach (Part part in inventory.AllParts)
+            {
+                this.partsTable.Rows.Add(part.PartID, part.Name, part.InStock, part.Price, part.Min, part.Max);
+            }
+
+            partsGridView.DataSource = this.partsTable;
 
         }
 
         private void InitializeProductsTable()
         {
-            productsTable = new DataTable("MyData");
+            this.productsTable.Columns.Add("Product ID");
+            this.productsTable.Columns.Add("Name");
+            this.productsTable.Columns.Add("Inventory");
+            this.productsTable.Columns.Add("Price");
+            this.productsTable.Columns.Add("Min");
+            this.productsTable.Columns.Add("Max");
 
-            productsTable.Columns.Add("Part ID");
-            productsTable.Columns.Add("Name");
-            productsTable.Columns.Add("Inventory");
-            productsTable.Columns.Add("Price");
-            productsTable.Columns.Add("Min");
-            productsTable.Columns.Add("Max");
+            foreach (Product product in inventory.Products)
+            {
+                this.productsTable.Rows.Add(product.ProductID, product.Name, product.InStock, product.Price, product.Min, product.Max);
+            }
 
-            productsTable.Rows.Add(0, "Red Bicycle", 15, 11.44, 1, 25);
-            productsTable.Rows.Add(1, "Yellow Bicycle", 19, 9.66, 1, 20);
-            productsTable.Rows.Add(2, "Blue Bicycle", 5, 12.77, 1, 25);
-
-            productsGridView.DataSource = productsTable;
+            productsGridView.DataSource = this.productsTable;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -97,9 +122,10 @@ namespace Software1_C
 
         private void addParts_Click(object sender, EventArgs e)
         {
-            InventoryManagementClasses partForm = new InventoryManagementClasses();
+            PartsForm partForm = new PartsForm();
 
-            if (partForm.ShowDialog() == DialogResult.OK) { 
+            if (partForm.ShowDialog() == DialogResult.OK)
+            {
                 partsGridView.Rows.Add(partForm);
             }
         }
