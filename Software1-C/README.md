@@ -1,18 +1,16 @@
-﻿Inventory:
-⦁	Consists of Part(s) and Product(s)
-⦁	Has a bunch of functions to add/remove/lookup/update both Part and Product
-⦁	 	BindingList<Product> and BindingList<Part>
+﻿## This is a Inventory Management Software
 
-Product:
-⦁	Multiple attributes
-⦁	BindingList<Part>
-⦁	add/remove/lookupAssociatedPart
+This system is built up of 3 classes: Inventory, Product and Part
 
-Part <<abstract>>
-⦁	bunch of attributes that are set in the children
+### Inventory
+- Keeps track of all the Products and Parts
+- Can create/modify/delete Products and/or Parts
+- Able to lookup different Products/Parts
 
-Inherit from Part
-⦁	Inhouse
-⦁	 	MachineID
-⦁	Outsourced
-⦁	 	CompanyName
+### Product
+- Collection of Parts
+- Able to add/remove/lookup associated parts
+
+### Part
+- Abstract class
+   - Inhouse or Outsourced
