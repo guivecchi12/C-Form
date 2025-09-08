@@ -1,6 +1,6 @@
 ﻿namespace Software1_C
 {
-    partial class InventoryManagement
+    partial class InventoryForm
     {
         /// <summary>
         ///  Required designer variable.

@@ -10,16 +10,15 @@ using System.Windows.Forms;
 
 namespace Software1_C
 {
-    public partial class Part : Form
+    public partial class PartsForm : Form
     {
-        public Part()
+        public PartsForm()
         {
             InitializeComponent();
         }
 
-        private void Part_Load(object sender, EventArgs e)
+        private void PartsForm_Load(object sender, EventArgs e)
         {
-            MessageBox.Show("Part_Load event fired successfully!");
         }
 
 

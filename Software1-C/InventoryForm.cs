@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace Software1_C
 {
-    public partial class InventoryManagement : Form
+    public partial class InventoryForm : Form
     {
         private DataGridView dataGridView;
         private Button addButton;
@@ -14,7 +14,7 @@ namespace Software1_C
         private DataTable partsTable;
         private DataTable productsTable;
         private Button exit;
-        public InventoryManagement()
+        public InventoryForm()
         {
             // Initialize Controls
             InitializeComponent();
@@ -97,7 +97,7 @@ namespace Software1_C
 
         private void addParts_Click(object sender, EventArgs e)
         {
-            Part partForm = new Part();
+            InventoryManagementClasses partForm = new InventoryManagementClasses();
 
             if (partForm.ShowDialog() == DialogResult.OK) { 
                 partsGridView.Rows.Add(partForm);

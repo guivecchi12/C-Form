@@ -6,7 +6,7 @@ namespace Software1_C
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new InventoryManagement());
+            Application.Run(new InventoryForm());
         }
     }
 }

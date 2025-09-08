@@ -1,6 +1,6 @@
 ﻿namespace Software1_C
 {
-    partial class Part
+    partial class PartsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -276,7 +276,7 @@
             Name = "Part";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "addPart";
-            Load += Part_Load;
+            Load += PartsForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
