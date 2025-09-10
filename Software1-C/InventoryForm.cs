@@ -122,13 +122,16 @@ namespace Software1_C
 
         private void addParts_Click(object sender, EventArgs e)
         {
-            PartsForm partForm = new PartsForm();
 
-            if (partForm.ShowDialog() == DialogResult.OK)
+            PartsForm partForm = new PartsForm(this.inventory.nextAvailablePartID());
+
+            if (partForm.ShowDialog() == DialogResult.OK && partForm.NewPart != null)
             {
-                partsGridView.Rows.Add(partForm);
+                Part part = partForm.NewPart;
+                this.partsTable.Rows.Add(part.PartID, part.Name, part.InStock, part.Price, part.Min, part.Max);
             }
         }
+
 
         private void modifyParts_Click(object sender, EventArgs e)
         {

@@ -150,6 +150,20 @@ namespace Software1_C
         {
             this.AllParts[partID] = part;
         }
+
+        public int nextAvailablePartID()
+        {
+            var largestID = 0;
+            foreach (Part part in this.AllParts)
+            {
+                if (largestID <= part.PartID)
+                {
+                    largestID = part.PartID + 1;
+                }
+            }
+
+            return largestID;
+        }
     }
 
 

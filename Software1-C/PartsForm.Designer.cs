@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             label1 = new Label();
             inHouseRadioButton = new RadioButton();
-            OutsourcedRadioButton = new RadioButton();
+            outsourcedRadioButton = new RadioButton();
             idText = new TextBox();
             nameText = new TextBox();
             inventoryText = new TextBox();
@@ -47,6 +48,8 @@
             partSource = new Label();
             saveButton = new Button();
             cancelButton = new Button();
+            bindingSource1 = new BindingSource(components);
+            ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -73,18 +76,18 @@
             inHouseRadioButton.UseVisualStyleBackColor = true;
             inHouseRadioButton.CheckedChanged += inHouseRadioButton_CheckedChanged;
             // 
-            // OutsourcedRadioButton
+            // outsourcedRadioButton
             // 
-            OutsourcedRadioButton.AutoSize = true;
-            OutsourcedRadioButton.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            OutsourcedRadioButton.Location = new Point(256, 21);
-            OutsourcedRadioButton.Name = "OutsourcedRadioButton";
-            OutsourcedRadioButton.Size = new Size(108, 24);
-            OutsourcedRadioButton.TabIndex = 2;
-            OutsourcedRadioButton.TabStop = true;
-            OutsourcedRadioButton.Text = "Outsourced";
-            OutsourcedRadioButton.UseVisualStyleBackColor = true;
-            OutsourcedRadioButton.CheckedChanged += OutsourcedRadioButton_CheckedChanged_1;
+            outsourcedRadioButton.AutoSize = true;
+            outsourcedRadioButton.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            outsourcedRadioButton.Location = new Point(256, 21);
+            outsourcedRadioButton.Name = "outsourcedRadioButton";
+            outsourcedRadioButton.Size = new Size(108, 24);
+            outsourcedRadioButton.TabIndex = 2;
+            outsourcedRadioButton.TabStop = true;
+            outsourcedRadioButton.Text = "Outsourced";
+            outsourcedRadioButton.UseVisualStyleBackColor = true;
+            outsourcedRadioButton.CheckedChanged += outsourcedRadioButton_CheckedChanged;
             // 
             // idText
             // 
@@ -248,7 +251,7 @@
             cancelButton.UseVisualStyleBackColor = false;
             cancelButton.Click += cancelButton_Click;
             // 
-            // Part
+            // PartsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -270,13 +273,14 @@
             Controls.Add(inventoryText);
             Controls.Add(nameText);
             Controls.Add(idText);
-            Controls.Add(OutsourcedRadioButton);
+            Controls.Add(outsourcedRadioButton);
             Controls.Add(inHouseRadioButton);
             Controls.Add(label1);
-            Name = "Part";
+            Name = "PartsForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "addPart";
             Load += PartsForm_Load;
+            ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -285,7 +289,7 @@
 
         private Label label1;
         private RadioButton inHouseRadioButton;
-        private RadioButton OutsourcedRadioButton;
+        private RadioButton outsourcedRadioButton;
         private TextBox idText;
         private TextBox nameText;
         private TextBox inventoryText;
@@ -302,5 +306,6 @@
         private Label partSource;
         private Button saveButton;
         private Button cancelButton;
+        private BindingSource bindingSource1;
     }
 }
