@@ -218,7 +218,7 @@
             partSource.AutoSize = true;
             partSource.Enabled = false;
             partSource.Font = new Font("Segoe UI", 11F);
-            partSource.Location = new Point(81, 302);
+            partSource.Location = new Point(49, 299);
             partSource.Name = "partSource";
             partSource.Size = new Size(84, 20);
             partSource.TabIndex = 16;

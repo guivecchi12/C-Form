@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Serialization;
+﻿using System.CodeDom.Compiler;
 
 namespace Software1_C
 {
@@ -17,13 +8,13 @@ namespace Software1_C
 
         private bool IsInHouse = false;
         private int ID;
-        private string? Name;
+        private string? NewName;
         private decimal? Price;
         private int? InStock;
-        private int? Min;
-        private int? Max;
+        private int Min = 0;
+        private int Max = int.MaxValue;
         private int? MachineID;
-        private string? CompanyName;
+        private string? NewCompanyName;
         internal PartsForm(int id)
         {
             this.ID = id;
@@ -39,16 +30,18 @@ namespace Software1_C
         private void inHouseRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             this.IsInHouse = true;
+            this.partSource.Text = "Machine ID";
         }
 
         private void outsourcedRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             this.IsInHouse = false;
+            this.partSource.Text = "Company Name";
         }
 
         private void nameText_TextChanged(object sender, EventArgs e)
         {
-            this.Name = nameText.Text;
+            this.NewName = nameText.Text;
             this.canSave();
         }
 
@@ -56,12 +49,29 @@ namespace Software1_C
         {
             try
             {
-                this.InStock = int.Parse(inventoryText.Text);
+                int temp = int.Parse(inventoryText.Text);
+
+                if(temp < this.Min)
+                {
+                    this.InStock = this.Min;
+                    this.inventoryText.Text = this.Min.ToString();
+                }
+                if(temp > this.Max)
+                {
+                    this.InStock = this.Max;
+                    this.inventoryText.Text = this.Max.ToString();
+                }
+
+                if (temp >= this.Min && temp <= this.Max)
+                {
+                    this.InStock = temp;
+                }
             }
             catch (FormatException)
             {
                 MessageBox.Show("Inventory has to be an integer", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.InStock = null;
+                inventoryText.Text = string.Empty;
             }
             this.canSave();
         }
@@ -76,6 +86,7 @@ namespace Software1_C
             {
                 MessageBox.Show("Price has to be an decimal", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.Price = null;
+                priceText.Text = string.Empty;
             }
             this.canSave();
         }
@@ -84,18 +95,23 @@ namespace Software1_C
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(maxText.Text))
+                int temp = int.Parse(maxText.Text);
+
+                if (temp >= this.Min)
                 {
-                    this.Max = null;
-                } else
+                    this.Max = temp;
+                }
+                if (temp < this.Min)
                 {
-                    this.Max = int.Parse(priceText.Text);
+                    this.Max = this.Min;
+                    this.maxText.Text = this.Min.ToString();
                 }
             }
             catch (FormatException)
             {
                 MessageBox.Show("Max has to be an integer", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.Max = null;
+                this.Max = int.MaxValue;
+                maxText.Text = string.Empty;
             }
             this.canSave();
         }
@@ -104,66 +120,92 @@ namespace Software1_C
         {
             try
             {
-                this.Min = int.Parse(priceText.Text);
+                int temp = int.Parse(minText.Text);
+
+                if(temp <= this.Max)
+                {
+                    this.Min = temp;
+                }
+                if(temp > this.Max)
+                {
+                    this.Min = this.Max;
+                    this.minText.Text = this.Max.ToString();
+                }
             }
             catch (FormatException)
             {
                 MessageBox.Show("Min has to be an integer", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.Min = null;
+                this.Min = 0;
+                minText.Text = string.Empty;
+
             }
             this.canSave();
         }
 
         private void partSourceText_TextChanged(object sender, EventArgs e)
         {
-           
+
             if (this.IsInHouse)
             {
                 try
                 {
-                    this.MachineID = int.Parse(partSource.Text);
-                    this.CompanyName = null;
+                    this.MachineID = int.Parse(partSourceText.Text);
+                    this.NewCompanyName = null;
                 }
                 catch (FormatException)
                 {
                     MessageBox.Show("MachineID has to be an integer", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     this.MachineID = null;
+                    partSourceText.Text = string.Empty;
                 }
-            } else
-                {
-                    this.CompanyName = partSource.Text;
-                    this.MachineID = null;
-                }
-            
+            }
+            else
+            {
+                this.NewCompanyName = partSourceText.Text;
+                this.MachineID = null;
+            }
+
             this.canSave();
         }
 
         private void canSave()
         {
             // all fields are filed out
-            if( this.Name != null && this.Price != null && this.InStock != null && this.Min != null && this.Max != null && (this.MachineID != null || this.CompanyName != null))
+            if (this.NewName != null && this.Price != null && this.InStock != null && (this.MachineID != null || this.NewCompanyName != null))
             {
-                saveButton.Enabled = true;
-            }
-            else
-            {
-                saveButton.Enabled = false;
-            }
+                if (this.InStock >= this.Min && this.InStock <= this.Max)
+                {
+                    saveButton.Enabled = true;
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("Inventory needs to be between Max and Min", "Invalid Quantities", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            } 
+
+            saveButton.Enabled = false;
+        }
+
+        private Part createInHousePart() {
+            return new Inhouse(this.ID, this.NewName ?? "NA", this.Price ?? 0, this.InStock ?? 0, this.Min, this.Max, this.MachineID ?? 0);
+        }
+        private Part createOutSourcedPart()
+        {
+            return new OutSourced(this.ID, this.NewName ?? "NA", this.Price ?? 0, this.InStock ?? 0, this.Min, this.Max, this.NewCompanyName ?? "NA");
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Saved" + " Name: " + this.Name);
-            this.NewPart = this.IsInHouse 
-                ? new Inhouse(this.ID, this.Name ?? "NA", this.Price ?? 0, this.InStock ?? 0, this.Min ?? 0, this.Max ?? 0, this.MachineID ?? 0) 
-                : new OutSourced(this.ID, this.Name ?? "NA", this.Price ?? 0, this.InStock ?? 0, this.Min ?? 0, this.Max ?? 0, this.CompanyName ?? "NA");
+            this.NewPart = this.IsInHouse
+                ? createInHousePart()
+                : createOutSourcedPart();
+
             this.DialogResult = DialogResult.OK;
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Cancel");
-            MessageBox.Show("Name: " + this.Name);
             this.Close();
         }
     }

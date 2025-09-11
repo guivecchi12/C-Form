@@ -7,9 +7,7 @@ namespace Software1_C
 {
     public partial class InventoryForm : Form
     {
-        private Inventory inventory = new Inventory();
-        private DataTable partsTable = new DataTable("partsTable");
-        private DataTable productsTable = new DataTable("productsTable");
+        private readonly Inventory inventory = new Inventory();
 
         public InventoryForm()
         {
@@ -48,46 +46,24 @@ namespace Software1_C
         }
         private void InitializePartsTable()
         {
-
-            this.partsTable.Columns.Add("Part ID");
-            this.partsTable.Columns.Add("Name");
-            this.partsTable.Columns.Add("Inventory");
-            this.partsTable.Columns.Add("Price");
-            this.partsTable.Columns.Add("Min");
-            this.partsTable.Columns.Add("Max");
-
-
-            foreach (Part part in inventory.AllParts)
-            {
-                this.partsTable.Rows.Add(part.PartID, part.Name, part.InStock, part.Price, part.Min, part.Max);
-            }
-
-            partsGridView.DataSource = this.partsTable;
-
+            this.partsGridView.DataSource = this.inventory.AllParts;
+            this.partsGridView.Columns["PartID"].HeaderText = "Part ID";
+            this.partsGridView.Columns["InStock"].HeaderText = "Inventory";
+            this.partsGridView.Columns["InStock"].DisplayIndex = 2;
         }
 
         private void InitializeProductsTable()
         {
-            this.productsTable.Columns.Add("Product ID");
-            this.productsTable.Columns.Add("Name");
-            this.productsTable.Columns.Add("Inventory");
-            this.productsTable.Columns.Add("Price");
-            this.productsTable.Columns.Add("Min");
-            this.productsTable.Columns.Add("Max");
-
-            foreach (Product product in inventory.Products)
-            {
-                this.productsTable.Rows.Add(product.ProductID, product.Name, product.InStock, product.Price, product.Min, product.Max);
-            }
-
-            productsGridView.DataSource = this.productsTable;
+            this.productsGridView.DataSource = this.inventory.Products;
+            this.productsGridView.Columns["ProductID"].HeaderText = "Product ID";
+            this.productsGridView.Columns["InStock"].HeaderText = "Inventory";
+            this.productsGridView.Columns["InStock"].DisplayIndex = 2;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             InitializePartsTable();
             InitializeProductsTable();
-
         }
 
         private void searchPartsButton_Click(object sender, EventArgs e)
@@ -127,8 +103,7 @@ namespace Software1_C
 
             if (partForm.ShowDialog() == DialogResult.OK && partForm.NewPart != null)
             {
-                Part part = partForm.NewPart;
-                this.partsTable.Rows.Add(part.PartID, part.Name, part.InStock, part.Price, part.Min, part.Max);
+                this.inventory.addPart(partForm.NewPart);
             }
         }
 
