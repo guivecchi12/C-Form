@@ -43,6 +43,7 @@ namespace Software1_C
             this.Max = oldPart.Max;
 
             InitializeComponent();
+            this.populateFields();
         }
 
         private void populateFields()
@@ -73,7 +74,6 @@ namespace Software1_C
 
         private void PartsForm_Load(object sender, EventArgs e)
         {
-            this.populateFields();
         }
 
         private void inHouseRadioButton_CheckedChanged(object sender, EventArgs e)
