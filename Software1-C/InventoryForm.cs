@@ -89,27 +89,19 @@ namespace Software1_C
 
         private void searchProductsButton_Click(object sender, EventArgs e)
         {
+            string search = this.searchParts.Text.Trim();
 
+            if (string.IsNullOrEmpty(search))
+            {
+                this.productsBindingSource.DataSource = this.inventory.Products;
+            }
+            else
+            {
+                var filteredList = this.inventory.Products.Where(part => part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                this.productsBindingSource.DataSource = new BindingList<Product>(filteredList);
+            }
         }
 
-        private void searchParts_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void searchProducts_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void partsGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void productsGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
 
         private void addParts_Click(object sender, EventArgs e)
         {

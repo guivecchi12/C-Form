@@ -65,7 +65,6 @@
             partsGridView.ShowEditingIcon = false;
             partsGridView.Size = new Size(755, 382);
             partsGridView.TabIndex = 0;
-            partsGridView.CellContentClick += partsGridView_CellContentClick;
             // 
             // productsGridView
             // 
@@ -81,7 +80,6 @@
             productsGridView.ShowEditingIcon = false;
             productsGridView.Size = new Size(838, 382);
             productsGridView.TabIndex = 1;
-            productsGridView.CellContentClick += productsGridView_CellContentClick;
             // 
             // label1
             // 
@@ -109,7 +107,6 @@
             searchParts.Name = "searchParts";
             searchParts.Size = new Size(408, 23);
             searchParts.TabIndex = 4;
-            searchParts.TextChanged += searchParts_TextChanged;
             // 
             // searchProducts
             // 
@@ -117,7 +114,6 @@
             searchProducts.Name = "searchProducts";
             searchProducts.Size = new Size(442, 23);
             searchProducts.TabIndex = 5;
-            searchProducts.TextChanged += searchProducts_TextChanged;
             // 
             // searchPartsButton
             // 
