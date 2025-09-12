@@ -47,6 +47,14 @@ namespace Software1_C
             this.inventory.addProduct(yellowBike);
             this.inventory.addProduct(blueBike);
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            InitializePartsTable();
+            InitializeProductsTable();
+        }
+
+        // --- Start Parts Functions ---
         private void InitializePartsTable()
         {
             this.partsBindingSource.DataSource = this.inventory.AllParts;
@@ -54,21 +62,6 @@ namespace Software1_C
             this.partsGridView.Columns["PartID"].HeaderText = "Part ID";
             this.partsGridView.Columns["InStock"].HeaderText = "Inventory";
             this.partsGridView.Columns["InStock"].DisplayIndex = 2;
-        }
-
-        private void InitializeProductsTable()
-        {
-            this.productsBindingSource.DataSource = this.inventory.Products;
-            this.productsGridView.DataSource = this.productsBindingSource;
-            this.productsGridView.Columns["ProductID"].HeaderText = "Product ID";
-            this.productsGridView.Columns["InStock"].HeaderText = "Inventory";
-            this.productsGridView.Columns["InStock"].DisplayIndex = 2;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            InitializePartsTable();
-            InitializeProductsTable();
         }
 
         private void searchPartsButton_Click(object sender, EventArgs e)
@@ -85,22 +78,6 @@ namespace Software1_C
             }
         }
 
-        private void searchProductsButton_Click(object sender, EventArgs e)
-        {
-            string search = this.searchParts.Text.Trim();
-
-            if (string.IsNullOrEmpty(search))
-            {
-                this.productsBindingSource.DataSource = this.inventory.Products;
-            }
-            else
-            {
-                var filteredList = this.inventory.Products.Where(part => part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-                this.productsBindingSource.DataSource = new BindingList<Product>(filteredList);
-            }
-        }
-
-
         private void addParts_Click(object sender, EventArgs e)
         {
 
@@ -111,7 +88,6 @@ namespace Software1_C
                 this.inventory.addPart(partForm.NewPart);
             }
         }
-
 
         private void modifyParts_Click(object sender, EventArgs e)
         {
@@ -156,7 +132,32 @@ namespace Software1_C
                 MessageBox.Show("Please select a row to delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+        // --- End Parts ---
+        // --- Start Products Functions ---
+        private void InitializeProductsTable()
+        {
+            this.productsBindingSource.DataSource = this.inventory.Products;
+            this.productsGridView.DataSource = this.productsBindingSource;
+            this.productsGridView.Columns["ProductID"].HeaderText = "Product ID";
+            this.productsGridView.Columns["InStock"].HeaderText = "Inventory";
+            this.productsGridView.Columns["InStock"].DisplayIndex = 2;
+        }
 
+        private void searchProductsButton_Click(object sender, EventArgs e)
+        {
+            string search = this.searchParts.Text.Trim();
+
+            if (string.IsNullOrEmpty(search))
+            {
+                this.productsBindingSource.DataSource = this.inventory.Products;
+            }
+            else
+            {
+                var filteredList = this.inventory.Products.Where(part => part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                this.productsBindingSource.DataSource = new BindingList<Product>(filteredList);
+            }
+        }
+        
         private void addProducts_Click(object sender, EventArgs e)
         {
 
@@ -171,6 +172,8 @@ namespace Software1_C
         {
 
         }
+
+        // -- End Products ---
 
         private void exit_Click(object sender, EventArgs e)
         {
