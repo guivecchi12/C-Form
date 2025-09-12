@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -8,6 +9,8 @@ namespace Software1_C
     public partial class InventoryForm : Form
     {
         private readonly Inventory inventory = new Inventory();
+        private BindingSource partsBindingSource;
+        private BindingSource productsBindingSource;
 
         public InventoryForm()
         {
@@ -46,7 +49,9 @@ namespace Software1_C
         }
         private void InitializePartsTable()
         {
-            this.partsGridView.DataSource = this.inventory.AllParts;
+            this.partsBindingSource = new BindingSource();
+            this.partsBindingSource.DataSource = this.inventory.AllParts;
+            this.partsGridView.DataSource = this.partsBindingSource;
             this.partsGridView.Columns["PartID"].HeaderText = "Part ID";
             this.partsGridView.Columns["InStock"].HeaderText = "Inventory";
             this.partsGridView.Columns["InStock"].DisplayIndex = 2;
@@ -54,7 +59,9 @@ namespace Software1_C
 
         private void InitializeProductsTable()
         {
-            this.productsGridView.DataSource = this.inventory.Products;
+            this.productsBindingSource = new BindingSource();
+            this.productsBindingSource.DataSource = this.inventory.Products;
+            this.productsGridView.DataSource = this.productsBindingSource;
             this.productsGridView.Columns["ProductID"].HeaderText = "Product ID";
             this.productsGridView.Columns["InStock"].HeaderText = "Inventory";
             this.productsGridView.Columns["InStock"].DisplayIndex = 2;
@@ -68,7 +75,16 @@ namespace Software1_C
 
         private void searchPartsButton_Click(object sender, EventArgs e)
         {
+            string search = this.searchParts.Text.Trim();
 
+            if (string.IsNullOrEmpty(search)) {
+                this.partsBindingSource.DataSource = this.inventory.AllParts;
+            }
+            else
+            {
+                var filteredList = this.inventory.AllParts.Where(part =>  part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                this.partsBindingSource.DataSource = new BindingList<Part>(filteredList);
+            }
         }
 
         private void searchProductsButton_Click(object sender, EventArgs e)
@@ -78,7 +94,6 @@ namespace Software1_C
 
         private void searchParts_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void searchProducts_TextChanged(object sender, EventArgs e)
@@ -125,13 +140,10 @@ namespace Software1_C
                 // Get the selected row.
                 DataGridViewRow selectedRow = partsGridView.SelectedRows[0];
 
-                // Get the corresponding DataRow from the DataTable.
-                DataRow dataRow = ((DataRowView)selectedRow.DataBoundItem).Row;
+                // Get the part.
+                Part selectedPart = (Part)selectedRow.DataBoundItem;
 
-                // Remove the row from the DataTable. This will automatically update the DataGridView.
-                dataRow.Delete();
-
-                MessageBox.Show("Row deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                inventory.deletePart(selectedPart);
             }
             else
             {
