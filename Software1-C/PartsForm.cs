@@ -6,7 +6,7 @@ namespace Software1_C
     {
         internal Part? NewPart { get; private set; }
 
-        private bool IsInHouse = false;
+        private bool IsInHouse = true;
         private int ID;
         private string? NewName;
         private decimal? Price;
@@ -15,17 +15,66 @@ namespace Software1_C
         private int Max = int.MaxValue;
         private int? MachineID;
         private string? NewCompanyName;
+
         internal PartsForm(int id)
         {
             this.ID = id;
             InitializeComponent();
         }
 
+        internal PartsForm(Part oldPart)
+        {
+            if(oldPart is Inhouse inhousePart)
+            {
+                this.IsInHouse = true;
+                this.MachineID = inhousePart.MachineID;
+            }
+            if(oldPart is OutSourced outSourcedPart)
+            {
+                this.IsInHouse = false;
+                this.NewCompanyName = outSourcedPart.CompanyName;
+            }
+
+            this.ID = oldPart.PartID;
+            this.NewName = oldPart.Name;
+            this.Price = oldPart.Price;
+            this.InStock = oldPart.InStock;
+            this.Min = oldPart.Min;
+            this.Max = oldPart.Max;
+
+            InitializeComponent();
+        }
+
+        private void populateFields()
+        {
+            if (IsInHouse)
+            {
+                this.inHouseRadioButton.Checked = true;
+                this.outsourcedRadioButton.Checked = false;
+
+                this.partSource.Text = "Machine ID";
+                this.partSourceText.Text = this.MachineID?.ToString();
+            } else
+            {
+                this.inHouseRadioButton.Checked = false;
+                this.outsourcedRadioButton.Checked = true;
+
+                this.partSource.Text = "Company Name";
+                this.partSourceText.Text = this.NewCompanyName?.ToString();
+            }
+
+            this.idText.Text = this.ID.ToString();
+            this.nameText.Text = this.NewName;
+            this.inventoryText.Text = this.InStock.ToString();
+            this.priceText.Text = this.Price.ToString();
+            this.maxText.Text = this.Max.ToString();
+            this.minText.Text = this.Min.ToString();
+        }
 
         private void PartsForm_Load(object sender, EventArgs e)
         {
+            this.populateFields();
         }
-
 
         private void inHouseRadioButton_CheckedChanged(object sender, EventArgs e)
         {

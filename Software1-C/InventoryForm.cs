@@ -9,8 +9,8 @@ namespace Software1_C
     public partial class InventoryForm : Form
     {
         private readonly Inventory inventory = new Inventory();
-        private BindingSource partsBindingSource;
-        private BindingSource productsBindingSource;
+        private BindingSource partsBindingSource = new BindingSource();
+        private BindingSource productsBindingSource = new BindingSource();
 
         public InventoryForm()
         {
@@ -49,7 +49,6 @@ namespace Software1_C
         }
         private void InitializePartsTable()
         {
-            this.partsBindingSource = new BindingSource();
             this.partsBindingSource.DataSource = this.inventory.AllParts;
             this.partsGridView.DataSource = this.partsBindingSource;
             this.partsGridView.Columns["PartID"].HeaderText = "Part ID";
@@ -59,7 +58,6 @@ namespace Software1_C
 
         private void InitializeProductsTable()
         {
-            this.productsBindingSource = new BindingSource();
             this.productsBindingSource.DataSource = this.inventory.Products;
             this.productsGridView.DataSource = this.productsBindingSource;
             this.productsGridView.Columns["ProductID"].HeaderText = "Product ID";
@@ -117,7 +115,23 @@ namespace Software1_C
 
         private void modifyParts_Click(object sender, EventArgs e)
         {
-            if (partsGridView.SelectedRows.Count > 0) { }
+            if (partsGridView.SelectedRows.Count > 0) {
+                // Get the selected row.
+                DataGridViewRow selectedRow = partsGridView.SelectedRows[0];
+
+                // Get the part.
+                Part selectedPart = (Part)selectedRow.DataBoundItem;
+
+                PartsForm partForm = new PartsForm(selectedPart);
+
+                if (partForm.ShowDialog() == DialogResult.OK && partForm.NewPart != null)
+                {
+                    Part newPart = partForm.NewPart;
+                    int id = newPart.PartID;
+
+                    this.inventory.updatePart(id, newPart);
+                }
+            }
             else
             {
                 MessageBox.Show("Please select a row to modify.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
