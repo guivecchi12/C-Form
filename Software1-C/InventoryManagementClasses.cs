@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Software1_C
 {
@@ -66,8 +61,17 @@ namespace Software1_C
 
     internal class Product
     {
-        public Product(int productId, string name, decimal price, int inStock, int min, int max) {
-            this.ProductID = productId;
+        public Product(int id)
+        {
+            this.ProductID = id;
+            this.Name = string.Empty;
+            this.Price = 0;
+            this.InStock = 0;
+            this.Min = 0;
+            this.Max = 0;
+        }
+        public Product(int id, string name, decimal price, int inStock, int min, int max) {
+            this.ProductID = id;
             this.Name = name;
             this.Price = price;
             this.InStock = inStock;
@@ -159,6 +163,20 @@ namespace Software1_C
                 if (largestID <= part.PartID)
                 {
                     largestID = part.PartID + 1;
+                }
+            }
+
+            return largestID;
+        }
+
+        public int nextAvailableProductID()
+        {
+            var largestID = 0;
+            foreach (Product product in this.Products)
+            {
+                if (largestID <= product.ProductID)
+                {
+                    largestID = product.ProductID + 1;
                 }
             }
 
