@@ -169,7 +169,7 @@ namespace Software1_C
 
         private void searchProductsButton_Click(object sender, EventArgs e)
         {
-            string search = this.searchParts.Text.Trim();
+            string search = this.searchProducts.Text.Trim();
 
             if (string.IsNullOrEmpty(search))
             {
