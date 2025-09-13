@@ -107,6 +107,7 @@
             searchParts.Name = "searchParts";
             searchParts.Size = new Size(408, 23);
             searchParts.TabIndex = 4;
+            searchParts.TextChanged += searchParts_TextChanged;
             // 
             // searchProducts
             // 
@@ -114,6 +115,7 @@
             searchProducts.Name = "searchProducts";
             searchProducts.Size = new Size(442, 23);
             searchProducts.TabIndex = 5;
+            searchProducts.TextChanged += searchProducts_TextChanged;
             // 
             // searchPartsButton
             // 

@@ -46,7 +46,7 @@
             label8 = new Label();
             label9 = new Label();
             searchCandidate = new Button();
-            textBox5 = new TextBox();
+            candidateTextBox = new TextBox();
             addButton = new Button();
             deleteButton = new Button();
             saveButton = new Button();
@@ -241,12 +241,13 @@
             searchCandidate.UseVisualStyleBackColor = false;
             searchCandidate.Click += searchCandidate_Click;
             // 
-            // textBox5
+            // candidateTextBox
             // 
-            textBox5.Location = new Point(986, 72);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(256, 23);
-            textBox5.TabIndex = 18;
+            candidateTextBox.Location = new Point(986, 72);
+            candidateTextBox.Name = "candidateTextBox";
+            candidateTextBox.Size = new Size(256, 23);
+            candidateTextBox.TabIndex = 18;
+            candidateTextBox.TextChanged += candidateTextBox_TextChanged;
             // 
             // addButton
             // 
@@ -302,7 +303,7 @@
             Controls.Add(saveButton);
             Controls.Add(deleteButton);
             Controls.Add(addButton);
-            Controls.Add(textBox5);
+            Controls.Add(candidateTextBox);
             Controls.Add(searchCandidate);
             Controls.Add(label9);
             Controls.Add(label8);
@@ -349,7 +350,7 @@
         private Label label8;
         private Label label9;
         private Button searchCandidate;
-        private TextBox textBox5;
+        private TextBox candidateTextBox;
         private Button addButton;
         private Button deleteButton;
         private Button saveButton;

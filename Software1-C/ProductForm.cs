@@ -76,7 +76,7 @@ namespace Software1_C
 
         private void searchCandidate_Click(object sender, EventArgs e)
         {
-            string search = this.searchCandidate.Text.Trim();
+            string search = this.candidateTextBox.Text.Trim();
 
             if (string.IsNullOrEmpty(search))
             {
@@ -88,6 +88,15 @@ namespace Software1_C
                 this.candidateSource.DataSource = new BindingList<Part>(filteredList);
             }
         }
+
+        private void candidateTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(candidateTextBox.Text.Trim()))
+            {
+                this.candidateSource.DataSource = this.AllParts;
+            }
+        }
+
         private void nameTextBox_TextChanged(object sender, EventArgs e)
         {
             this.Product.Name = nameTextBox.Text;
@@ -101,7 +110,8 @@ namespace Software1_C
                 if (!string.IsNullOrEmpty(text))
                     Product.InStock = int.Parse(text);
             }
-            catch (FormatException) {
+            catch (FormatException)
+            {
                 {
                     MessageBox.Show("Inventory has to be an integer", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     Product.InStock = 0;
@@ -134,8 +144,8 @@ namespace Software1_C
             try
             {
                 string text = maxTextBox.Text;
-                if (!string.IsNullOrEmpty(text)) 
-                { 
+                if (!string.IsNullOrEmpty(text))
+                {
                     int temp = int.Parse(text);
 
                     if (temp >= this.Product.Min)
@@ -194,7 +204,7 @@ namespace Software1_C
             bool emptyInventory = string.IsNullOrEmpty(this.inventoryTextBox.Text);
             bool emptyPrice = string.IsNullOrEmpty(this.priceTextBox.Text);
             bool emptyMax = string.IsNullOrEmpty(this.maxTextBox.Text);
-            bool emptyMin = string.IsNullOrEmpty (this.minTextBox.Text);
+            bool emptyMin = string.IsNullOrEmpty(this.minTextBox.Text);
 
             bool noEmptyField = !emptyName && !emptyInventory && !emptyPrice && !emptyMax && !emptyMin;
 

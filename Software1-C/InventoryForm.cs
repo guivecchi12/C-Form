@@ -76,6 +76,14 @@ namespace Software1_C
             }
         }
 
+        private void searchParts_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(searchParts.Text.Trim()))
+            {
+                this.partsBindingSource.DataSource = this.inventory.AllParts;
+            }
+        }
+
         private void addParts_Click(object sender, EventArgs e)
         {
 
@@ -126,15 +134,17 @@ namespace Software1_C
 
                 Product? associatedProduct = null;
 
-                foreach(Product product in this.inventory.Products)
+                foreach (Product product in this.inventory.Products)
                 {
-                    if (product.lookupAssociatedPart(selectedPart.PartID) != null) { 
-                        associatedProduct = product; 
-                        break; 
+                    if (product.lookupAssociatedPart(selectedPart.PartID) != null)
+                    {
+                        associatedProduct = product;
+                        break;
                     }
                 }
 
-                if (associatedProduct != null) {
+                if (associatedProduct != null)
+                {
                     MessageBox.Show($"You cannot delete this part, as it is an associated part of {associatedProduct.Name}");
                 }
                 else
@@ -179,6 +189,16 @@ namespace Software1_C
             {
                 var filteredList = this.inventory.Products.Where(part => part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
                 this.productsBindingSource.DataSource = new BindingList<Product>(filteredList);
+            }
+        }
+
+        private void searchProducts_TextChanged(object sender, EventArgs e)
+        {
+            string search = this.searchProducts.Text.Trim();
+
+            if (string.IsNullOrEmpty(search))
+            {
+                this.productsBindingSource.DataSource = this.inventory.Products;
             }
         }
 
