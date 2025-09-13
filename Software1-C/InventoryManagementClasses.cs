@@ -14,7 +14,6 @@ namespace Software1_C
 
     internal class Inhouse : Part
     {
-
         public Inhouse(int partID, string name, decimal price, int inStock, int min, int max, int machineID) : base() {
             this.PartID = partID;
             this.Name = name;
@@ -35,10 +34,10 @@ namespace Software1_C
         public int MachineID { get; set; }
     }
 
-    internal class OutSourced : Part
+    internal class Outsourced : Part
     {
 
-        public OutSourced(int partID, string name, decimal price, int inStock, int min, int max, string companyName) : base()
+        public Outsourced(int partID, string name, decimal price, int inStock, int min, int max, string companyName) : base()
         {
             this.PartID = partID;
             this.Name = name;
@@ -70,7 +69,8 @@ namespace Software1_C
             this.Min = 0;
             this.Max = 0;
         }
-        public Product(int id, string name, decimal price, int inStock, int min, int max) {
+        public Product(int id, string name, decimal price, int inStock, int min, int max)
+        {
             this.ProductID = id;
             this.Name = name;
             this.Price = price;
@@ -78,6 +78,7 @@ namespace Software1_C
             this.Min = min;
             this.Max = max;
         }
+
         public BindingList<Part> AssociatedParts { get; } = new BindingList<Part>();
         public int ProductID { get; set; }
         public string Name { get; set; }
@@ -94,16 +95,18 @@ namespace Software1_C
         public bool removeAssociatedPart(int partID)
         {
             // find part
-            Part partToRemove = this.AssociatedParts[partID];
+            Part? partToRemove = this.lookupAssociatedPart(partID);
+
+            if(partToRemove == null) return false;
 
             // Returns true if part is removed
             // Returns false if failed to remove or part was not found
             return this.AssociatedParts.Remove(partToRemove);
         }
 
-        public Part lookupAssociatedPart(int partID)
+        public Part? lookupAssociatedPart(int partID)
         {
-            return this.AssociatedParts[partID];
+            return this.AssociatedParts.FirstOrDefault(part => part.PartID == partID);
         }
     }
 
@@ -117,24 +120,35 @@ namespace Software1_C
             this.Products.Add(product);
         }
 
-        public bool removeProduct(int partID)
+        public bool removeProduct(int id)
         {
             // Find Product
-            Product productToRemove =this.Products[partID];
+            Product productToRemove = this.lookupProduct(id);
 
             // Returns true if part is removed
             // Returns false if failed to remove or part was not found
             return this.Products.Remove(productToRemove);
         }
 
-        public Product lookupProduct(int partID)
+        public Product lookupProduct(int productID)
         {
-            return this.Products[partID];
+            return this.Products.First(product => product.ProductID == productID);
         }
 
-        public void updateProduct(int productID, Product product)
+        public void updateProduct(int productID, Product newProduct)
         {
-            this.Products[productID] = product;
+            Product oldProduct = this.lookupProduct(productID);
+            if (updateProduct != null)
+            {
+                int index = this.Products.IndexOf(oldProduct);
+                if (index != -1)
+                {
+                    this.Products[index] = newProduct;
+                } else
+                {
+                    throw new ArgumentException($"Part with ID {productID} not found.");
+                }
+            }
         }
 
         public void addPart(Part part)
@@ -145,15 +159,29 @@ namespace Software1_C
             return this.AllParts.Remove(part);
         }
 
-        public Part lookupPart(int partID)
+        private Part lookupPart(int partID)
         {
-            return this.AllParts[partID];
+            return this.AllParts.First(part => part.PartID == partID);
         }
 
-        public void updatePart(int partID, Part part)
+        public void updatePart(int partID, Part newPart)
         {
-            this.AllParts[partID] = part;
+            Part oldPart = this.lookupPart(partID);
+
+            if (oldPart != null)
+            {
+                int index = this.AllParts.IndexOf(oldPart);
+                if (index != -1)
+                {
+                    this.AllParts[index] = newPart;
+                   
+                } else
+                {
+                    throw new ArgumentException($"Part with ID {partID} not found.");
+                }
+            }
         }
+
 
         public int nextAvailablePartID()
         {

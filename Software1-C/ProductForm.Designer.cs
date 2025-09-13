@@ -67,6 +67,7 @@
             // 
             // idTextBox
             // 
+            idTextBox.Enabled = false;
             idTextBox.Location = new Point(114, 185);
             idTextBox.Name = "idTextBox";
             idTextBox.ReadOnly = true;

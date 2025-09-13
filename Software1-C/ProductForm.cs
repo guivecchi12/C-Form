@@ -35,20 +35,58 @@ namespace Software1_C
 
             InitializeComponent();
             this.initializeTables();
+            this.populateFields();
+        }
+
+        private void populateFields()
+        {
+            this.idTextBox.Text = this.Product.ProductID.ToString();
+            this.nameTextBox.Text = this.Product.Name;
+            this.priceTextBox.Text = this.Product.Price.ToString();
+            this.inventoryTextBox.Text = this.Product.InStock.ToString();
+            this.minTextBox.Text = this.Product.Min.ToString();
+            this.maxTextBox.Text = this.Product.Max.ToString();
         }
 
         private void initializeTables()
         {
+            this.initializeCandidateTable();
+            this.initializeAssociatedTable();
+        }
+
+        private void initializeCandidateTable()
+        {
             this.candidateSource.DataSource = this.AllParts;
             this.candidateGridView.DataSource = this.candidateSource;
 
-            this.associatedSource.DataSource = this.Product;
+            this.candidateGridView.Columns["PartID"].HeaderText = "Part ID";
+            this.candidateGridView.Columns["InStock"].HeaderText = "Inventory";
+            this.candidateGridView.Columns["InStock"].DisplayIndex = 2;
+        }
+
+        private void initializeAssociatedTable()
+        {
+            this.associatedSource.DataSource = this.Product.AssociatedParts;
             this.associatedGridView.DataSource = this.associatedSource;
+
+            this.associatedGridView.Columns["PartID"].HeaderText = "Part ID";
+            this.associatedGridView.Columns["InStock"].HeaderText = "Inventory";
+            this.associatedGridView.Columns["InStock"].DisplayIndex = 2;
         }
 
         private void searchCandidate_Click(object sender, EventArgs e)
         {
+            string search = this.searchCandidate.Text.Trim();
 
+            if (string.IsNullOrEmpty(search))
+            {
+                this.candidateSource.DataSource = this.AllParts;
+            }
+            else
+            {
+                var filteredList = this.AllParts.Where(part => part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                this.candidateSource.DataSource = new BindingList<Part>(filteredList);
+            }
         }
         private void nameTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -59,8 +97,9 @@ namespace Software1_C
         {
             try
             {
-
-               Product.InStock = int.Parse(this.inventoryTextBox.Text);
+                string text = inventoryTextBox.Text;
+                if (!string.IsNullOrEmpty(text))
+                    Product.InStock = int.Parse(text);
             }
             catch (FormatException) {
                 {
@@ -75,7 +114,11 @@ namespace Software1_C
         {
             try
             {
-                this.Product.Price = decimal.Parse(priceTextBox.Text);
+                string text = priceTextBox.Text;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    this.Product.Price = decimal.Parse(priceTextBox.Text);
+                }
             }
             catch (FormatException)
             {
@@ -90,16 +133,20 @@ namespace Software1_C
         {
             try
             {
-                int temp = int.Parse(maxTextBox.Text);
+                string text = maxTextBox.Text;
+                if (!string.IsNullOrEmpty(text)) 
+                { 
+                    int temp = int.Parse(text);
 
-                if (temp >= this.Product.Min)
-                {
-                    this.Product.Max = temp;
-                }
-                if (temp < this.Product.Min)
-                {
-                    this.Product.Max = this.Product.Min;
-                    this.maxTextBox.Text = this.Product.Min.ToString();
+                    if (temp >= this.Product.Min)
+                    {
+                        this.Product.Max = temp;
+                    }
+                    if (temp < this.Product.Min)
+                    {
+                        this.Product.Max = this.Product.Min;
+                        this.maxTextBox.Text = this.Product.Min.ToString();
+                    }
                 }
             }
             catch (FormatException)
@@ -115,16 +162,20 @@ namespace Software1_C
         {
             try
             {
-                int temp = int.Parse(minTextBox.Text);
+                string text = minTextBox.Text;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    int temp = int.Parse(text);
 
-                if (temp <= this.Product.Max)
-                {
-                    this.Product.Min = temp;
-                }
-                if (temp > this.Product.Max)
-                {
-                    this.Product.Min = this.Product.Max;
-                    this.minTextBox.Text = this.Product.Max.ToString();
+                    if (temp <= this.Product.Max)
+                    {
+                        this.Product.Min = temp;
+                    }
+                    if (temp > this.Product.Max)
+                    {
+                        this.Product.Min = this.Product.Max;
+                        this.minTextBox.Text = this.Product.Max.ToString();
+                    }
                 }
             }
             catch (FormatException)
@@ -139,7 +190,15 @@ namespace Software1_C
 
         private void canSave()
         {
-            if (this.Product.Name != string.Empty && this.Product.InStock > 0 && this.Product.Price > 0 && this.Product.Max > 0)
+            bool emptyName = string.IsNullOrEmpty(this.Product.Name);
+            bool emptyInventory = string.IsNullOrEmpty(this.inventoryTextBox.Text);
+            bool emptyPrice = string.IsNullOrEmpty(this.priceTextBox.Text);
+            bool emptyMax = string.IsNullOrEmpty(this.maxTextBox.Text);
+            bool emptyMin = string.IsNullOrEmpty (this.minTextBox.Text);
+
+            bool noEmptyField = !emptyName && !emptyInventory && !emptyPrice && !emptyMax && !emptyMin;
+
+            if (noEmptyField)
             {
                 if (this.Product.InStock >= this.Product.Min && this.Product.InStock <= this.Product.Max)
                 {
@@ -155,13 +214,41 @@ namespace Software1_C
 
         private void addButton_Click(object sender, EventArgs e)
         {
+            if (candidateGridView.SelectedRows.Count > 0)
+            {
+                // Get the selected row.
+                DataGridViewRow selectedRow = candidateGridView.SelectedRows[0];
 
+                // Get the part.
+                Part selectedPart = (Part)selectedRow.DataBoundItem;
+
+                if (Product.lookupAssociatedPart(selectedPart.PartID) == null)
+                {
+                    Product.addAssociatedPart(selectedPart);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to modify.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
+            if (associatedGridView.SelectedRows.Count > 0)
+            {
+                DataGridViewRow selectedRow = associatedGridView.SelectedRows[0];
 
+                Part selectedPart = (Part)selectedRow.DataBoundItem;
+
+                Product.removeAssociatedPart(selectedPart.PartID);
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to modify.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void saveButton_Click(object sender, EventArgs e)

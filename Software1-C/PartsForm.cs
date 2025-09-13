@@ -1,4 +1,5 @@
 ﻿using System.CodeDom.Compiler;
+using System.Windows.Forms;
 
 namespace Software1_C
 {
@@ -16,10 +17,13 @@ namespace Software1_C
         private int? MachineID;
         private string? NewCompanyName;
 
+        private bool isInitialized = false;
+
         internal PartsForm(int id)
         {
             this.ID = id;
             InitializeComponent();
+            this.isInitialized = true;
         }
 
         internal PartsForm(Part oldPart)
@@ -29,7 +33,7 @@ namespace Software1_C
                 this.IsInHouse = true;
                 this.MachineID = inhousePart.MachineID;
             }
-            if(oldPart is OutSourced outSourcedPart)
+            if(oldPart is Outsourced outSourcedPart)
             {
                 this.IsInHouse = false;
                 this.NewCompanyName = outSourcedPart.CompanyName;
@@ -44,6 +48,7 @@ namespace Software1_C
 
             InitializeComponent();
             this.populateFields();
+            this.isInitialized = true;
         }
 
         private void populateFields()
@@ -80,12 +85,26 @@ namespace Software1_C
         {
             this.IsInHouse = true;
             this.partSource.Text = "Machine ID";
+            if (isInitialized)
+            {
+                this.partSourceText.Text = string.Empty;
+                this.MachineID = null;
+                this.NewCompanyName = null;
+            }
         }
 
         private void outsourcedRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             this.IsInHouse = false;
             this.partSource.Text = "Company Name";
+
+            if (isInitialized)
+            {
+                this.partSourceText.Text = string.Empty;
+                this.NewCompanyName = null;
+                this.MachineID = null;
+
+            }
         }
 
         private void nameText_TextChanged(object sender, EventArgs e)
@@ -98,22 +117,26 @@ namespace Software1_C
         {
             try
             {
-                int temp = int.Parse(inventoryText.Text);
+                string text = inventoryText.Text;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    int temp = int.Parse(text);
 
-                if(temp < this.Min)
-                {
-                    this.InStock = this.Min;
-                    this.inventoryText.Text = this.Min.ToString();
-                }
-                if(temp > this.Max)
-                {
-                    this.InStock = this.Max;
-                    this.inventoryText.Text = this.Max.ToString();
-                }
+                    if (temp < this.Min)
+                    {
+                        this.InStock = this.Min;
+                        this.inventoryText.Text = this.Min.ToString();
+                    }
+                    if (temp > this.Max)
+                    {
+                        this.InStock = this.Max;
+                        this.inventoryText.Text = this.Max.ToString();
+                    }
 
-                if (temp >= this.Min && temp <= this.Max)
-                {
-                    this.InStock = temp;
+                    if (temp >= this.Min && temp <= this.Max)
+                    {
+                        this.InStock = temp;
+                    }
                 }
             }
             catch (FormatException)
@@ -129,7 +152,9 @@ namespace Software1_C
         {
             try
             {
-                this.Price = decimal.Parse(priceText.Text);
+                string text = priceText.Text;
+                if (!string.IsNullOrEmpty(text))
+                    this.Price = decimal.Parse(text);
             }
             catch (FormatException)
             {
@@ -144,16 +169,20 @@ namespace Software1_C
         {
             try
             {
-                int temp = int.Parse(maxText.Text);
+                string text = maxText.Text;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    int temp = int.Parse(text);
 
-                if (temp >= this.Min)
-                {
-                    this.Max = temp;
-                }
-                if (temp < this.Min)
-                {
-                    this.Max = this.Min;
-                    this.maxText.Text = this.Min.ToString();
+                    if (temp >= this.Min)
+                    {
+                        this.Max = temp;
+                    }
+                    if (temp < this.Min)
+                    {
+                        this.Max = this.Min;
+                        this.maxText.Text = this.Min.ToString();
+                    }
                 }
             }
             catch (FormatException)
@@ -169,16 +198,20 @@ namespace Software1_C
         {
             try
             {
-                int temp = int.Parse(minText.Text);
+                string text = minText.Text;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    int temp = int.Parse(text);
 
-                if(temp <= this.Max)
-                {
-                    this.Min = temp;
-                }
-                if(temp > this.Max)
-                {
-                    this.Min = this.Max;
-                    this.minText.Text = this.Max.ToString();
+                    if (temp <= this.Max)
+                    {
+                        this.Min = temp;
+                    }
+                    if (temp > this.Max)
+                    {
+                        this.Min = this.Max;
+                        this.minText.Text = this.Max.ToString();
+                    }
                 }
             }
             catch (FormatException)
@@ -198,8 +231,12 @@ namespace Software1_C
             {
                 try
                 {
-                    this.MachineID = int.Parse(partSourceText.Text);
-                    this.NewCompanyName = null;
+                    string text = partSourceText.Text;
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        this.MachineID = int.Parse(text);
+                        this.NewCompanyName = null;
+                    }
                 }
                 catch (FormatException)
                 {
@@ -219,8 +256,9 @@ namespace Software1_C
 
         private void canSave()
         {
+            bool emptyFields = string.IsNullOrEmpty(this.minText.Text) && string.IsNullOrEmpty(this.maxText.Text);
             // all fields are filed out
-            if (this.NewName != null && this.Price != null && this.InStock != null && (this.MachineID != null || this.NewCompanyName != null))
+            if (this.NewName != null && this.Price != null && this.InStock != null && (this.MachineID != null || this.NewCompanyName != null) && !emptyFields)
             {
                 if (this.InStock >= this.Min && this.InStock <= this.Max)
                 {
@@ -241,7 +279,7 @@ namespace Software1_C
         }
         private Part createOutSourcedPart()
         {
-            return new OutSourced(this.ID, this.NewName ?? "NA", this.Price ?? 0, this.InStock ?? 0, this.Min, this.Max, this.NewCompanyName ?? "NA");
+            return new Outsourced(this.ID, this.NewName ?? "NA", this.Price ?? 0, this.InStock ?? 0, this.Min, this.Max, this.NewCompanyName ?? "NA");
         }
 
         private void saveButton_Click(object sender, EventArgs e)

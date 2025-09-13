@@ -1,8 +1,5 @@
-using System;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace Software1_C
 {
@@ -23,9 +20,9 @@ namespace Software1_C
         {
             // Add a couple initial parts
             Inhouse part1 = new Inhouse(0, "Wheel", 12.11M, 15, 5, 25, 1);
-            OutSourced part2 = new OutSourced(1, "Pedal", 8.22M, 11, 5, 25, "Company1");
+            Outsourced part2 = new Outsourced(1, "Pedal", 8.22M, 11, 5, 25, "Company1");
             Inhouse part3 = new Inhouse(2, "Chain", 8.33M, 12, 5, 25, 2);
-            OutSourced part4 = new OutSourced(3, "Seat", 4.55M, 8, 2, 15, "Company1");
+            Outsourced part4 = new Outsourced(3, "Seat", 4.55M, 8, 2, 15, "Company1");
 
             this.inventory.addPart(part1);
             this.inventory.addPart(part2);
@@ -160,17 +157,53 @@ namespace Software1_C
         
         private void addProducts_Click(object sender, EventArgs e)
         {
+            ProductForm productForm = new ProductForm(this.inventory.nextAvailableProductID(), this.inventory.AllParts);
+            if (productForm.ShowDialog() == DialogResult.OK)
+            {
+                this.inventory.addProduct(productForm.Product);
+            }
 
         }
 
         private void modifyProducts_Click(object sender, EventArgs e)
         {
+            if (productsGridView.SelectedRows.Count > 0)
+            {
+                // Get the selected row.
+                DataGridViewRow selectedRow = productsGridView.SelectedRows[0];
 
+                // Get the part.
+                Product selectedProduct = (Product)selectedRow.DataBoundItem;
+
+                ProductForm productForm = new ProductForm(selectedProduct, this.inventory.AllParts);
+
+                if (productForm.ShowDialog() == DialogResult.OK)
+                {
+                    inventory.updateProduct(selectedProduct.ProductID, productForm.Product);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void deleteProducts_Click(object sender, EventArgs e)
         {
+            if (productsGridView.SelectedRows.Count > 0)
+            {
+                // Get the selected row.
+                DataGridViewRow selectedRow = productsGridView.SelectedRows[0];
 
+                // Get the part.
+                Product selectedProduct = (Product)selectedRow.DataBoundItem;
+
+                inventory.removeProduct(selectedProduct.ProductID);
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         // -- End Products ---
