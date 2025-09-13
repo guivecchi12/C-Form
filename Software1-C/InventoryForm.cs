@@ -65,12 +65,13 @@ namespace Software1_C
         {
             string search = this.searchParts.Text.Trim();
 
-            if (string.IsNullOrEmpty(search)) {
+            if (string.IsNullOrEmpty(search))
+            {
                 this.partsBindingSource.DataSource = this.inventory.AllParts;
             }
             else
             {
-                var filteredList = this.inventory.AllParts.Where(part =>  part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                var filteredList = this.inventory.AllParts.Where(part => part.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
                 this.partsBindingSource.DataSource = new BindingList<Part>(filteredList);
             }
         }
@@ -88,7 +89,8 @@ namespace Software1_C
 
         private void modifyParts_Click(object sender, EventArgs e)
         {
-            if (partsGridView.SelectedRows.Count > 0) {
+            if (partsGridView.SelectedRows.Count > 0)
+            {
                 // Get the selected row.
                 DataGridViewRow selectedRow = partsGridView.SelectedRows[0];
 
@@ -122,7 +124,32 @@ namespace Software1_C
                 // Get the part.
                 Part selectedPart = (Part)selectedRow.DataBoundItem;
 
-                inventory.deletePart(selectedPart);
+                Product? associatedProduct = null;
+
+                foreach(Product product in this.inventory.Products)
+                {
+                    if (product.lookupAssociatedPart(selectedPart.PartID) != null) { 
+                        associatedProduct = product; 
+                        break; 
+                    }
+                }
+
+                if (associatedProduct != null) {
+                    MessageBox.Show($"You cannot delete this part, as it is an associated part of {associatedProduct.Name}");
+                }
+                else
+                {
+
+                    DialogResult confirmation = MessageBox.Show(
+                        "Are you sure you want to delete this part?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo
+                    );
+                    if (confirmation == DialogResult.Yes)
+                    {
+                        inventory.deletePart(selectedPart);
+                    }
+                }
             }
             else
             {
@@ -154,7 +181,7 @@ namespace Software1_C
                 this.productsBindingSource.DataSource = new BindingList<Product>(filteredList);
             }
         }
-        
+
         private void addProducts_Click(object sender, EventArgs e)
         {
             ProductForm productForm = new ProductForm(this.inventory.nextAvailableProductID(), this.inventory.AllParts);
@@ -198,7 +225,16 @@ namespace Software1_C
                 // Get the part.
                 Product selectedProduct = (Product)selectedRow.DataBoundItem;
 
-                inventory.removeProduct(selectedProduct.ProductID);
+                DialogResult confirmation = MessageBox.Show(
+                    "Are you sure you want to delete this product?",
+                    "Confirmation",
+                    MessageBoxButtons.YesNo
+                );
+
+                if (confirmation == DialogResult.Yes)
+                {
+                    inventory.removeProduct(selectedProduct.ProductID);
+                }
             }
             else
             {
@@ -212,5 +248,6 @@ namespace Software1_C
         {
             this.Close();
         }
+
     }
 }
